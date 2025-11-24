@@ -11,6 +11,18 @@ export const useWeb3 = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState(null);
+  const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(false);
+
+  // Check if MetaMask is installed on initial load
+  useEffect(() => {
+    const checkMetaMask = () => {
+      const installed = typeof window.ethereum !== 'undefined';
+      setIsMetaMaskInstalled(installed);
+      return installed;
+    };
+    
+    checkMetaMask();
+  }, []);
 
   // Helper function to create contract instance
   const createContractInstance = async (signer) => {
@@ -31,8 +43,10 @@ export const useWeb3 = () => {
   };
 
   const connectWallet = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      setError('Please install MetaMask!');
+    if (!isMetaMaskInstalled) {
+      setError('MetaMask is not installed. Please install MetaMask to connect your wallet.');
+      // Open MetaMask download page in new tab
+      window.open('https://metamask.io/download/', '_blank');
       return null;
     }
 
@@ -80,7 +94,7 @@ export const useWeb3 = () => {
   };
 
   const checkConnection = async () => {
-    if (typeof window.ethereum === 'undefined') {
+    if (!isMetaMaskInstalled) {
       return;
     }
 
@@ -112,7 +126,7 @@ export const useWeb3 = () => {
     checkConnection();
 
     // Listen for account changes
-    if (window.ethereum) {
+    if (isMetaMaskInstalled) {
       const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
           checkConnection();
@@ -134,7 +148,7 @@ export const useWeb3 = () => {
         window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
-  }, []);
+  }, [isMetaMaskInstalled]);
 
   return { 
     account, 
@@ -144,6 +158,7 @@ export const useWeb3 = () => {
     isConnected, 
     isConnecting,
     error,
+    isMetaMaskInstalled,
     connectWallet,
     disconnectWallet,
     checkConnection

@@ -16,6 +16,7 @@ function App() {
     contract, 
     isConnected, 
     isConnecting,
+    isMetaMaskInstalled, // Add this
     connectWallet, 
     disconnectWallet 
   } = useWeb3();
@@ -70,6 +71,7 @@ function App() {
         disconnectWallet={disconnectWallet}
         isConnected={isConnected}
         isConnecting={isConnecting}
+        isMetaMaskInstalled={isMetaMaskInstalled} // Add this prop
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         theme={theme}

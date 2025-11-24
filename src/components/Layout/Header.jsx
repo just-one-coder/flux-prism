@@ -1,6 +1,6 @@
 // Header.jsx
 import React from 'react';
-import { Sun, Moon, Home, Plus, Search, User, GalleryVertical, LogOut, Wallet } from 'lucide-react';
+import { Sun, Moon, Home, Plus, Search, User, GalleryVertical, LogOut, Wallet, Download } from 'lucide-react';
 
 const Header = ({ 
   account, 
@@ -8,6 +8,7 @@ const Header = ({
   disconnectWallet,
   isConnected,
   isConnecting,
+  isMetaMaskInstalled, // Add this prop
   currentPage, 
   setCurrentPage, 
   theme, 
@@ -32,6 +33,10 @@ const Header = ({
     } else {
       connectWallet();
     }
+  };
+
+  const handleInstallMetaMask = () => {
+    window.open('https://metamask.io/download/', '_blank');
   };
 
   return (
@@ -131,27 +136,42 @@ const Header = ({
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={handleWalletAction}
-                  disabled={isConnecting}
-                  className={`flex items-center space-x-2 px-6 py-2 rounded-lg font-semibold transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
-                  } hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {isConnecting ? (
-                    <>
-                      <div className="spinner border-white border-2 w-4 h-4"></div>
-                      <span>Connecting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Wallet size={18} />
-                      <span>Connect Wallet</span>
-                    </>
-                  )}
-                </button>
+                /* Show different button based on MetaMask installation status */
+                isMetaMaskInstalled ? (
+                  <button
+                    onClick={handleWalletAction}
+                    disabled={isConnecting}
+                    className={`flex items-center space-x-2 px-6 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                      theme === 'dark'
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    } hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isConnecting ? (
+                      <>
+                        <div className="spinner border-white border-2 w-4 h-4"></div>
+                        <span>Connecting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Wallet size={18} />
+                        <span>Connect Wallet</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleInstallMetaMask}
+                    className={`flex items-center space-x-2 px-6 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                      theme === 'dark'
+                        ? 'bg-orange-600 hover:bg-orange-700 text-white'
+                        : 'bg-orange-600 hover:bg-orange-700 text-white'
+                    } hover:scale-105 active:scale-95`}
+                  >
+                    <Download size={18} />
+                    <span>Install MetaMask</span>
+                  </button>
+                )
               )}
             </div>
           </div>
